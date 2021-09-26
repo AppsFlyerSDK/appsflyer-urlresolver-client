@@ -24,7 +24,7 @@ let package = Package(
         .target(
             name: "AppsFlyerResolver",
             dependencies: [],
-            path: "Sources/AppsFlyerResolver"),
+            path: "iOS/AppsFlyerURLResolver/Sources/AppsFlyerResolver"),
         .testTarget(
             name: "AppsFlyerResolverTests",
             dependencies: ["AppsFlyerResolver"],
