@@ -8,17 +8,17 @@
 
 Pod::Spec.new do |spec|
 
-  spec.name         = "AppsFlyerResolver"
+  spec.name         = "AppsFlyerURLResolver"
   spec.version      = "0.0.1"
   spec.summary      = "AppsFLyer URL Resolver"
   spec.description  = <<-DESC
   AppsFlyer is the market leader in mobile advertising attribution & analytics, helping marketers to pinpoint their targeting, optimize their ad spend and boost their ROI.
                    DESC
 
-  spec.homepage     = "https://github.com/pazlavi/AppsFlyerResolver-iOS"
+  spec.homepage     = "https://github.com/AppsFlyerSDK/AppsFlyerURLResolver"
   spec.license      = "MIT"
   spec.author       = { "pazlavi" => "paz.lavi@appsflyer.com" }
-  spec.source       = { :git => "https://github.com/pazlavi/AppsFlyerResolver-iOS.git", :tag => spec.version.to_s }
-  spec.source_files = 'ios/AppsFlyerURLResolver/Sources//**/*.{swift,h,m}'
+  spec.source       = { :git => "https://github.com/AppsFlyerSDK/AppsFlyerURLResolver.git", :tag => spec.version.to_s }
+  spec.source_files = 'iOS/AppsFlyerURLResolver/Sources//**/*.{swift,h,m}'
 
 end
