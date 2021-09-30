@@ -6,14 +6,29 @@ buildscript {
     }
 
     dependencies {
-        classpath "com.android.tools.build:gradle:7.0.0"
+        classpath "com.android.tools.build:gradle:7.0.2"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.5.21"
+        classpath "io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.30.0"
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
 }
 
+apply plugin: 'io.codearte.nexus-staging'
+
+def getRepositoryUsername() { return hasProperty('ossrhUsername') ? ossrhUsername : "" }
+
+def getRepositoryPassword() { return hasProperty('ossrhPassword') ? ossrhPassword : "" }
+
+nexusStaging {
+    serverUrl = "https://s01.oss.sonatype.org/service/local/"
+    packageGroup = GROUP // optional if packageGroup == project.getGroup()
+    username = getRepositoryUsername()
+    password = getRepositoryPassword()
+    delayBetweenRetriesInMillis = 30000
+    numberOfRetries = 120
+}
 
 task clean(type: Delete) {
     delete rootProject.buildDir

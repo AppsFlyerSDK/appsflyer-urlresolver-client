@@ -19,6 +19,7 @@ Pod::Spec.new do |spec|
   spec.license      = "MIT"
   spec.author       = { "pazlavi" => "paz.lavi@appsflyer.com" }
   spec.source       = { :git => "https://github.com/AppsFlyerSDK/AppsFlyerURLResolver.git", :tag => spec.version.to_s }
-  spec.source_files = 'iOS/AppsFlyerURLResolver/Sources//**/*.{swift,h,m}'
+  spec.source_files = 'iOS/AppsFlyerURLResolver/Sources/**/*.{swift,h,m}'
+  spec.ios.deployment_target = '9.0'
 
 end

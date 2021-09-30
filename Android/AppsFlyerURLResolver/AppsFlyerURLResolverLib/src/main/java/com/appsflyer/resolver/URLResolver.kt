@@ -9,11 +9,15 @@ import java.net.HttpURLConnection
 import java.net.URL
 import java.util.concurrent.TimeUnit
 
-class URLResolver(var debug: Boolean) {
-    constructor() : this(false)
+class URLResolver {
+    private var debug: Boolean = false
 
     init {
         CookieHandler.setDefault(CookieManager())
+    }
+
+    fun setDebug(debug: Boolean) = apply {
+        this.debug = debug
     }
 
     fun resolveSync(

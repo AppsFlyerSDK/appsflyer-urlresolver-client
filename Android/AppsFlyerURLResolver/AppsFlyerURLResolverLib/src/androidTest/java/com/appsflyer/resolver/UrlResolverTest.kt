@@ -12,7 +12,7 @@ class UrlResolverTest {
     @Test
     fun  testResolveUsingBitlyAndLambda(){
         runBlocking{
-            val res =  URLResolver().resolve("https://bit.ly/38JtcFq", 5)
+            val res =  URLResolver().setDebug(true).resolve("https://bit.ly/38JtcFq", 5)
             assertEquals(res , "https://paz.onelink.me/waF3/paz")
         }
 

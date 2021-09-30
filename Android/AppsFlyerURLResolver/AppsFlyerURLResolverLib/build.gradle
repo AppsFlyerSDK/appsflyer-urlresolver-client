@@ -1,10 +1,8 @@
 plugins {
     id 'com.android.library'
     id 'kotlin-android'
-    id 'maven-publish'
 
 }
-group='com.github.pazlavi'
 
 
 android {
@@ -13,9 +11,10 @@ android {
     defaultConfig {
         minSdk 16
         targetSdk 30
-        versionCode 1
-        versionName "1.0"
-
+        versionCode Integer.parseInt(project.BUILD_NUMBER)
+        versionName project.POM_VERSION
+        buildConfigField "String", "POM_ARTIFACT_ID", "\"$POM_ARTIFACT_ID\""
+        buildConfigField "String", "GROUP", "\"$GROUP\""
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
     }
@@ -24,16 +23,6 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
-    }
-
-    project.afterEvaluate {
-        publishing {
-            publications {
-                release(MavenPublication) {
-                    from components.release
-                }
-            }
         }
     }
 
@@ -58,3 +47,5 @@ dependencies {
 
 
 }
+
+apply from: file('publish.gradle')

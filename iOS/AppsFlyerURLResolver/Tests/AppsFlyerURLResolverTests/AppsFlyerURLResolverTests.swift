@@ -21,11 +21,10 @@ class AppsFlyerURLResolverTests: XCTestCase {
     func testNullURL() throws {
         var res : String?
         let expectation = self.expectation(description: "Waiting for the resolve call to complete.")
-        URLResolver().resolve(url: nil){url in
+        URLResolver().setDebug(true).resolve(url: nil){url in
             res = url
             expectation.fulfill()
 
-          
         }
         waitForExpectations(timeout: 10){ error in
             XCTAssertNil(error)

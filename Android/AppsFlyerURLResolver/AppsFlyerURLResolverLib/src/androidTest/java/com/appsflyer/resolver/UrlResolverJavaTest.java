@@ -11,7 +11,7 @@ import org.junit.runner.RunWith;
 public class UrlResolverJavaTest {
     @Test
     public  void testResolveUsingBitlyAndLambda(){
-       String res =  new URLResolver().resolveSync("https://bit.ly/38JtcFq", 5 );
+       String res =  new URLResolver().setDebug(true).resolveSync("https://bit.ly/38JtcFq", 5 );
                 assertEquals(res , "https://paz.onelink.me/waF3/paz");
     }
 

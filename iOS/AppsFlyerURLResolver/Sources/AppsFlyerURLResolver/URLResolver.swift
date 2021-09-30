@@ -10,42 +10,41 @@ import Foundation
 public class URLResolver: NSObject {
     private var redirects : [String] = []
     private var maxRedirections : Int = 10
-    private var isDebug : Bool
+    private var isDebug : Bool = false
     
-  
-    public init(isDebug : Bool = false) {
+    
+    public func setDebug(_ isDebug : Bool) -> URLResolver{
         self.isDebug = isDebug
+        return self
     }
-    /*
-     * 
-     */
-    public func resolve(url: String?, maxRedirections: Int = 10 , onDeepLinkValueResolved:  @escaping (String?) -> Void)  {
+    
+    public func resolve(url: String?, maxRedirections: Int = 10 , completionHandler :  @escaping (String?) -> Void)  {
         if url == nil  {
-            onDeepLinkValueResolved(url)
+            completionHandler(url)
             return
         }
         // MI link contains '%%' symbols as a query param place holder. In iOS this scheme is not allowed.
         // Hance, we have to encode the query part to be in a valid Percent-encoding.
         guard let encoded = url!.encodeUrl() else {
-            onDeepLinkValueResolved(url)
+            completionHandler(url)
             return
         }
         
         // check we got valid URL, if not we'll return the input
         if !encoded.isValidURL() {
-            onDeepLinkValueResolved(url)
+            completionHandler(url)
             return
         }
         
         logDebug("Resolving URL: \(url!)")
         self.redirects = [encoded]
         self.maxRedirections = maxRedirections
-        resolveInternal(onComplete: onDeepLinkValueResolved)
+        resolveInternal(completionHandler: completionHandler)
         
         
     }
     
-   private func resolveInternal( onComplete: @escaping (String?) -> Void){
+   private func resolveInternal( completionHandler: @escaping (String?) -> Void){
        DispatchQueue.global(qos: .background).async {
            let uri = self.redirects.last!
            let session = URLSession(configuration: .default, delegate: self, delegateQueue: nil)
@@ -53,7 +52,7 @@ public class URLResolver: NSObject {
            guard let url = URL(string: uri) else {
                self.logDebug("Could no create URL object for \(uri)")
                DispatchQueue.main.asyncAfter(deadline: .now(), execute: {
-                   onComplete(nil)
+                   completionHandler(nil)
                })
                return
            }
@@ -65,12 +64,12 @@ public class URLResolver: NSObject {
                    self.logDebug("Found URL: \(response!.url!.absoluteString)")
                    //return the last URL to the developer
                    DispatchQueue.main.asyncAfter(deadline: .now(), execute: {
-                       onComplete(response?.url?.absoluteString)
+                       completionHandler(response?.url?.absoluteString)
                    })
                }else if error != nil{
                    self.logError(error!.localizedDescription)
                    DispatchQueue.main.asyncAfter(deadline: .now(), execute: {
-                       onComplete(nil)
+                       completionHandler(nil)
                    })
                }
            }
