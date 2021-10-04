@@ -48,4 +48,4 @@ dependencies {
 
 }
 
-apply from: file('publish.gradle')
+apply from: rootProject.file('gradle/publish.gradle')
