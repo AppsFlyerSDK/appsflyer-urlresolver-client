@@ -40,20 +40,18 @@ public class URLResolver: NSObject {
         self.redirects = [encoded]
         self.maxRedirections = maxRedirections
         resolveInternal(completionHandler: completionHandler)
-        
-        
     }
     
    private func resolveInternal( completionHandler: @escaping (String?) -> Void){
-       DispatchQueue.global(qos: .background).async {
+       DispatchQueue.global(qos: .default).async {
            let uri = self.redirects.last!
            let session = URLSession(configuration: .default, delegate: self, delegateQueue: nil)
            
            guard let url = URL(string: uri) else {
                self.logDebug("Could no create URL object for \(uri)")
-               DispatchQueue.main.asyncAfter(deadline: .now(), execute: {
+               DispatchQueue.global(qos: .default).async {
                    completionHandler(nil)
-               })
+               }
                return
            }
            
@@ -63,14 +61,14 @@ public class URLResolver: NSObject {
                if response?.url != nil{
                    self.logDebug("Found URL: \(response!.url!.absoluteString)")
                    //return the last URL to the developer
-                   DispatchQueue.main.asyncAfter(deadline: .now(), execute: {
+                   DispatchQueue.main.async {
                        completionHandler(response?.url?.absoluteString)
-                   })
+                   }
                }else if error != nil{
                    self.logError(error!.localizedDescription)
-                   DispatchQueue.main.asyncAfter(deadline: .now(), execute: {
+                   DispatchQueue.main.async {
                        completionHandler(nil)
-                   })
+                   }
                }
            }
            task.resume()
@@ -84,13 +82,13 @@ extension URLResolver: URLSessionDelegate, URLSessionTaskDelegate {
   public func urlSession(_ session: URLSession, task: URLSessionTask, willPerformHTTPRedirection response: HTTPURLResponse, newRequest request: URLRequest, completionHandler: @escaping (URLRequest?) -> Void) {
        
        if (300...308).contains(response.statusCode){ // has a redirection
-           guard let absoluteString = request.url?.absoluteString else {
+           guard let urlString = request.url?.absoluteString else {
                completionHandler(nil)
                return
            }
            
-           self.redirects.append(absoluteString)
-           self.logDebug("Redirect to \(absoluteString)")
+           self.redirects.append(urlString)
+           self.logDebug("Redirect to \(urlString)")
            
            if self.redirects.count == self.maxRedirections {
                completionHandler(nil)
@@ -112,12 +110,10 @@ extension URLResolver: URLSessionDelegate, URLSessionTaskDelegate {
 extension URLResolver{
    private func logDebug(_ msg:String){
         if isDebug{
-            NSLog("AppsFlyer Resolver [Debug]: \(msg)")
+            NSLog("AppsFlyer URL Resolver [Debug]: \(msg)")
         }
-        
     }
     private func logError(_ msg:String){
-        NSLog("AppsFlyer Resolver [Error]: \(msg)")
-        
+        NSLog("AppsFlyer URL Resolver [Error]: \(msg)")
     }
 }
