@@ -6,13 +6,13 @@ import org.junit.Test
 class UrlResolverTest {
     @Test
     fun testResolveUsingBitlyAndLambda() {
-        val res = URLResolver(true).resolve("https://bit.ly/38JtcFq", 5)
+        val res = URLResolver(true).resolveSync("https://bit.ly/38JtcFq", 5)
         assertEquals(res, "https://paz.onelink.me/waF3/paz")
     }
 
     @Test
     fun testResolveMILink() {
-        val res = URLResolver().resolve(
+        val res = URLResolver().resolveSync(
             "https://mi.gap.com/p/cp/d46c31d50872e4b3/c?mi_u=51635872&EV=GPUSCPATHTSTPC40485" +
                     "93PERST1_WMNNLPSPRP04162021&DI=51635872&CD=GPNC_GPR&cvosrc=email.exacttarget" +
                     ".GPUS04162021&EV_Segment1=GPUSGWMET&url=https%3A%2F%2Fmi.gap.com%2Fp%2Frp%2F" +
@@ -30,37 +30,37 @@ class UrlResolverTest {
 
     @Test
     fun testResolveUsingBitlyAndCallback() {
-        val res = URLResolver().resolve("https://bit.ly/38JtcFq", 5)
+        val res = URLResolver().resolveSync("https://bit.ly/38JtcFq", 5)
         assertEquals(res, "https://paz.onelink.me/waF3/paz")
     }
 
     @Test
     fun testResolveUsingBitlyAndCallbackObject() {
-        val res = URLResolver().resolve("https://bit.ly/38JtcFq", 5)
+        val res = URLResolver().resolveSync("https://bit.ly/38JtcFq", 5)
         assertEquals(res, "https://paz.onelink.me/waF3/paz")
     }
 
     @Test
     fun testNullURL() {
-        val res = URLResolver().resolve(null, 5)
+        val res = URLResolver().resolveSync(null, 5)
         assertEquals(res, null)
     }
 
     @Test
     fun testNotaURL() {
-        val res = URLResolver().resolve("abcd", 5)
+        val res = URLResolver().resolveSync("abcd", 5)
         assertEquals(res, "abcd")
     }
 
     @Test
     fun testEmptyString() {
-        val res = URLResolver().resolve("", 5)
+        val res = URLResolver().resolveSync("", 5)
         assertEquals(res, "")
     }
 
     @Test
     fun testWhenURLisEncoded() {
-        val res = URLResolver().resolve(
+        val res = URLResolver().resolveSync(
             "https%3A%2F%2Fmi.gap.com%2Fp%2Fcp%2Fd46c31d50872e4b3%2Fc%3Fmi_u%3D51635872%26EV" +
                     "%3DGPUSCPATHTSTPC4048593PERST1_WMNNLPSPRP04162021%26DI%3D51635872%26CD%3DGPN" +
                     "C_GPR%26cvosrc%3Demail.exacttarget.GPUS04162021%26EV_Segment1%3DGPUSGWMET%26" +

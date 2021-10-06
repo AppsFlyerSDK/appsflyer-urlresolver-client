@@ -15,10 +15,7 @@ class URLResolver(private val debug: Boolean = false) {
         CookieHandler.setDefault(CookieManager())
     }
 
-    fun resolve(
-        url: String?,
-        maxRedirections: Int = 10,
-    ): String? {
+    fun resolveSync(url: String?, maxRedirections: Int = 10): String? {
         if (url == null) {
             return null
         }
@@ -43,7 +40,6 @@ class URLResolver(private val debug: Boolean = false) {
         } else {
             url
         }
-
     }
 
     private fun resolveInternal(uri: String): AFHttpResponse {
@@ -68,7 +64,6 @@ class URLResolver(private val debug: Boolean = false) {
         }
         return res
     }
-
 
     private fun afDebugLog(msg: String) {
         if (debug) logger.log(Level.FINE, msg)
