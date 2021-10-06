@@ -1,31 +1,18 @@
 package com.appsflyer.resolver
 
 import android.util.Log
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
 import java.net.CookieHandler
 import java.net.CookieManager
 import java.net.HttpURLConnection
 import java.net.URL
 import java.util.concurrent.TimeUnit
 
-class URLResolver {
-    private var debug: Boolean = false
-
+class URLResolver(private val debug: Boolean = false) {
     init {
         CookieHandler.setDefault(CookieManager())
     }
 
-    fun setDebug(debug: Boolean) = apply {
-        this.debug = debug
-    }
-
-    fun resolveSync(
-        url: String?,
-        maxRedirections: Int = 10,
-    ) = runBlocking(Dispatchers.IO){ resolve(url, maxRedirections) }
-
-    suspend fun resolve(
+    fun resolve(
         url: String?,
         maxRedirections: Int = 10,
     ): String? {
@@ -78,7 +65,6 @@ class URLResolver {
         }
         return res
     }
-
 
 
     private fun afDebugLog(msg: String) {
