@@ -1,13 +1,16 @@
 package com.appsflyer.resolver
 
-import android.util.Log
 import java.net.CookieHandler
 import java.net.CookieManager
 import java.net.HttpURLConnection
 import java.net.URL
 import java.util.concurrent.TimeUnit
+import java.util.logging.Level
+import java.util.logging.Logger
 
 class URLResolver(private val debug: Boolean = false) {
+    private val logger = Logger.getLogger("AppsFlyer_Resolver")
+
     init {
         CookieHandler.setDefault(CookieManager())
     }
@@ -68,11 +71,11 @@ class URLResolver(private val debug: Boolean = false) {
 
 
     private fun afDebugLog(msg: String) {
-        if (debug) Log.d("AppsFlyer_Resolver", msg)
+        if (debug) logger.log(Level.FINE, msg)
     }
 
     private fun afErrorLog(msg: String?, e: Throwable) {
-        if (msg != null) Log.d("AppsFlyer_Resolver", msg)
+        if (msg != null) logger.log(Level.FINE, msg)
         e.printStackTrace()
     }
 
