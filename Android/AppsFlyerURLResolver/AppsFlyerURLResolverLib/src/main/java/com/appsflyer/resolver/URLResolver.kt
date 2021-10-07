@@ -1,34 +1,21 @@
 package com.appsflyer.resolver
 
-import android.util.Log
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
 import java.net.CookieHandler
 import java.net.CookieManager
 import java.net.HttpURLConnection
 import java.net.URL
 import java.util.concurrent.TimeUnit
+import java.util.logging.Level
+import java.util.logging.Logger
 
-class URLResolver {
-    private var debug: Boolean = false
+class URLResolver(private val debug: Boolean = false) {
+    private val logger = Logger.getLogger("AppsFlyer_Resolver")
 
     init {
         CookieHandler.setDefault(CookieManager())
     }
 
-    fun setDebug(debug: Boolean) = apply {
-        this.debug = debug
-    }
-
-    fun resolveSync(
-        url: String?,
-        maxRedirections: Int = 10,
-    ) = runBlocking(Dispatchers.IO){ resolve(url, maxRedirections) }
-
-    suspend fun resolve(
-        url: String?,
-        maxRedirections: Int = 10,
-    ): String? {
+    fun resolveSync(url: String?, maxRedirections: Int = 10): String? {
         if (url == null) {
             return null
         }
@@ -53,7 +40,6 @@ class URLResolver {
         } else {
             url
         }
-
     }
 
     private fun resolveInternal(uri: String): AFHttpResponse {
@@ -79,14 +65,12 @@ class URLResolver {
         return res
     }
 
-
-
     private fun afDebugLog(msg: String) {
-        if (debug) Log.d("AppsFlyer_Resolver", msg)
+        if (debug) logger.log(Level.FINE, msg)
     }
 
     private fun afErrorLog(msg: String?, e: Throwable) {
-        if (msg != null) Log.d("AppsFlyer_Resolver", msg)
+        if (msg != null) logger.log(Level.FINE, msg)
         e.printStackTrace()
     }
 
