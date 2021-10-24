@@ -2,12 +2,9 @@
 
 # AppsFlyer URL Resolver
 
-🛠 In order for us to provide optimal support, we would kindly ask you to submit any issues to support@appsflyer.com
+The AppsFlyer URLResolver library is a simple tool to perform redirections of a URL and get a final URL from it. 
 
-*When submitting an issue please specify your AppsFlyer sign-up (account) email , your app ID , production steps, logs, code snippets and any additional relevant information.*
-
-## Table of content
-- [Description](#Description)
+## Table of contents
 - [Installation](#Installation)
      - [Android Installation](#AndroidInstallation)
      - [iOS Installation](#iOSInstallation)
@@ -15,13 +12,12 @@
     - [Android API](#AndroidAPI)
     - [iOS API](#iOSAPI)
 - [Debug](#Debug)
+- [Support](#Support)
 
-## <a id="Description"> Description  
-write here description of the library
 
 ## <a id="Installation"> Installation  
  ### <a id="AndroidInstallation"> Android  
- Install the Android SDK using Gradle. <br>
+ Install the URLResolver library using Gradle. <br>
  **Step 1: Declare repositories**  
 In the Project `build.gradle` file, declare the `mavenCentral` repository:
 ```groovy
@@ -32,30 +28,12 @@ In the Project `build.gradle` file, declare the `mavenCentral` repository:
    }  
 ```
 **Step 2: Add dependency**
-In the application  `build.gradle`  file, add the  [latest Android SDK](https://mvnrepository.com/artifact/com.appsflyer/af-android-sdk)  package:
+In the application  `build.gradle`  file, add the dependency to [latest version of library](http://LINK):
 ```groovy  
    dependencies {  
          implementation 'com.github.pazlavi:AppsFlyerResolver:0.0.1-V6'
    }  
 ```
-<!---
-Add it in your root build.gradle at the end of repositories:  
-```groovy  
-   allprojects {  
-      repositories {  
-         ...  
-         maven { url 'https://jitpack.io' }  
-      }  
-   }  
-```  
-Add the dependency  
-  
-```groovy  
-   dependencies {  
-         implementation 'com.github.pazlavi:AppsFlyerResolver:0.0.1-V6'
-   }  
-```
--->
  ### <a id="iOSInstallation"> iOS  
  #### <u>Swift Package Manger (SPM)</u>
  **Step 1: Navigate to Add Package Dependency**  
@@ -98,77 +76,36 @@ github "AppsFlyerSDK/AppsFlyerURLResolver" ~> 1.0.0
 ## <a id="API">API
 ### <a id="AndroidAPI">Android
 
-We're introducing two alternatives APIs to implement the URL resolving.
-* `resolve` - Kotlin implementation that should be used inside a coroutine.
-* `resolveSync` -  Java synchronized implementation.
-
 ### `resolve`
 **Method signature**
 ```kotlin
-suspend fun resolve(url: String?,maxRedirections: Int = 10): String?
+fun resolve(url: String?,maxRedirections: Int = 10, urlResolverListener: URLResolverListener): String?
 ```
 **Description**
 Resolve a given URL. 
-This function will perform redirects until to final URL or up to the maximum redirects. The function will return the last URL address.
-* Run this function only from a coroutine or another suspend function.
+This function will perform redirects until it gets to the final URL or up to the maximum redirects. The function will return the last URL address.
 * `null` URL will return `null`. 
-* Not a vailid URL will return the input to the function (`url` parameter).
+* An invalid URL will return the original input (passed in the `url` parameter).
 
 **Input arguments**
 |Type|Name|Description|
 |--|--|--|
 |String?|url|The URL to resolve|
 |Int|maxRedirections|The maximum redirections to relove. The default value is 10 Redirections|
+|URLResolverListener|urlResolverListener|The listener for the output of the URL resolving
 
-**Returns**
-Optional String
 
 **Example**
 ```kotlin
-   override fun onDeepLinking(deepLinkResult: DeepLinkResult) {
+  override fun onDeepLinking(deepLinkResult: DeepLinkResult) {
         if (deepLinkResult.status == DeepLinkResult.Status.FOUND) {
-            runBlocking(Dispatchers.IO) {
-                val url = URLResolver().resolve(deepLinkResult.deepLink?.deepLinkValue)
-                Log.d(TAG, "final URL: $url")
+            URLResolver().resolve(deepLinkResult.deepLink?.deepLinkValue, 5, object : URLResolverListener {
+            override fun onComplete(url: String?) {
+            	Log.d(TAG, "final URL: $url")
             }
+        })
         }
     }
-```
-
-### `resolveSync`
-**Method signature**
-```kotlin
-fun resolveSync(url: String?,maxRedirections: Int = 10): String?
-```
-```java
-public String resolveSync(String url, int maxRedirections);
-```
- **Description**
-Resolve a given URL. 
-This function will perform redirects until to final URL or up to the maximum redirects. The function will return the last URL address.
-* This is a synchronize function that will block your code.
-* `null` URL will return `null`. 
-* Not a vailid URL will return the input to the function (`url` parameter).
-
-**Input arguments**
-|Type|Name|Description|
-|--|--|--|
-|String?|url|The URL to resolve|
-|Int|maxRedirections|The maximum redirections to relove. The default value is 10 Redirections |
-
-**Returns**
-Optional String
-
-**Example**
-```java
-        @Override
-        public void onDeepLinking(@NonNull DeepLinkResult deepLinkResult) {
-            if (deepLinkResult.getStatus() == DeepLinkResult.Status.FOUND) {
-                String url = new URLResolver().resolveSync(deepLinkResult.getDeepLink().getDeepLinkValue(), 8);
-                Log.d(TAG, "final URL: " + url);
-
-            }
-        }
 ```
 
 ### <a id="iOSAPI">iOS
@@ -205,17 +142,22 @@ Void
 ```
 
 ## <a id="Debug"> Debug  
-You can enable the SDK logs by using the `setDebug` setter. 
-* The logs are disabled by default.
-* The setter returns the URLResolver instance.
+The logs are disabled by default. 
+You can enable the debugging logs by adding `true`  as the argument for the URLResolver() constructor.
 
 ### Android
 ```Kotlin
-URLResolver().setDebug(true)
+URLResolver(true)
 ```
 
 ### iOS
 ```swift
-URLResolver().setDebug(true)
+URLResolver(isDebug: true)
 ```
 
+
+## <a id="Support"> Support 
+
+🛠 In order for us to provide optimal support, we would kindly ask you to submit any issues to support@appsflyer.com
+
+*When submitting an issue please specify your AppsFlyer sign-up (account) email , your app ID , production steps, logs, code snippets and any additional relevant information.*
