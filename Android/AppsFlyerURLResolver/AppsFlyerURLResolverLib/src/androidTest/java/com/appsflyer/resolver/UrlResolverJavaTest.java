@@ -1,6 +1,7 @@
 package com.appsflyer.resolver;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import androidx.annotation.Nullable;
 
@@ -22,8 +23,11 @@ public class UrlResolverJavaTest {
     @Test
     public void testResolveUsingBitlyAndLambda() throws InterruptedException {
         new URLResolver(true)
-                .resolve("https://bit.ly/38JtcFq", 5, url -> res = url);
-        lock.await(5, TimeUnit.SECONDS);
+                .resolve("https://bit.ly/38JtcFq", 5, url -> {
+                    res = url;
+                    lock.countDown();
+                });
+        assertTrue(lock.await(5, TimeUnit.SECONDS));
         assertEquals(res, "https://paz.onelink.me/waF3/paz");
     }
 
@@ -34,9 +38,10 @@ public class UrlResolverJavaTest {
                     @Override
                     public void onComplete(@Nullable String url) {
                         res = url;
+                        lock.countDown();
                     }
                 });
-        lock.await(5, TimeUnit.SECONDS);
+        assertTrue(lock.await(5, TimeUnit.SECONDS));
         assertEquals(res, "https://paz.onelink.me/waF3/paz");
     }
 }

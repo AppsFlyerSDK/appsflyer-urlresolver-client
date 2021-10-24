@@ -1,7 +1,6 @@
 package com.appsflyer.resolver
 
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNotEquals
+import org.junit.Assert.*
 import org.junit.Test
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
@@ -14,8 +13,9 @@ class UrlResolverTest {
         var res: String? = null
         URLResolver(true).resolve("https://bit.ly/38JtcFq", 5) {
             res = it
+            lock.countDown()
         }
-        lock.await(5, TimeUnit.SECONDS)
+        assertTrue(lock.await(5, TimeUnit.SECONDS))
         assertEquals(res, "https://paz.onelink.me/waF3/paz")
     }
 
@@ -30,8 +30,9 @@ class UrlResolverTest {
                     "=%%CD_value%%",
         ) {
             res = it
+            lock.countDown()
         }
-        lock.await(5, TimeUnit.SECONDS)
+        assertTrue(lock.await(5, TimeUnit.SECONDS))
         assertEquals(
             res,
             "https://www.gap.com/?mi_u=%25%25email_key%25%25&EV=%25%25EV_value%25%25&DI=%2" +
@@ -52,8 +53,9 @@ class UrlResolverTest {
             2
         ) {
             res = it
+            lock.countDown()
         }
-        lock.await(5, TimeUnit.SECONDS)
+        assertTrue(lock.await(5, TimeUnit.SECONDS))
         assertNotEquals(
             res,
             "https://www.gap.com/?mi_u=%25%25email_key%25%25&EV=%25%25EV_value%25%25&DI=%2" +
@@ -68,9 +70,10 @@ class UrlResolverTest {
         URLResolver(true).resolve("https://bit.ly/38JtcFq", 5, object : URLResolverListener {
             override fun onComplete(url: String?) {
                 res = url
+                lock.countDown()
             }
         })
-        lock.await(5, TimeUnit.SECONDS)
+        assertTrue(lock.await(5, TimeUnit.SECONDS))
         assertEquals(res, "https://paz.onelink.me/waF3/paz")
 
     }
@@ -81,10 +84,11 @@ class UrlResolverTest {
         val listener = object : URLResolverListener {
             override fun onComplete(url: String?) {
                 res = url
+                lock.countDown()
             }
         }
         URLResolver(true).resolve("https://bit.ly/38JtcFq", 5, listener)
-        lock.await(5, TimeUnit.SECONDS)
+        assertTrue(lock.await(5, TimeUnit.SECONDS))
         assertEquals(res, "https://paz.onelink.me/waF3/paz")
 
     }
@@ -94,8 +98,9 @@ class UrlResolverTest {
         var res: String? = null
         URLResolver(true).resolve(null, 5) {
             res = it
+            lock.countDown()
         }
-        lock.await(5, TimeUnit.SECONDS)
+        assertTrue(lock.await(5, TimeUnit.SECONDS))
         assertEquals(res, null)
 
     }
@@ -105,8 +110,9 @@ class UrlResolverTest {
         var res: String? = null
         URLResolver(true).resolve("abcd", 5) {
             res = it
+            lock.countDown()
         }
-        lock.await(5, TimeUnit.SECONDS)
+        assertTrue(lock.await(5, TimeUnit.SECONDS))
         assertEquals(res, "abcd")
     }
 
@@ -115,14 +121,15 @@ class UrlResolverTest {
         var res: String? = null
         URLResolver(true).resolve("", 5) {
             res = it
+            lock.countDown()
         }
-        lock.await(5, TimeUnit.SECONDS)
+        assertTrue(lock.await(5, TimeUnit.SECONDS))
         assertEquals(res, "")
     }
 
     @Test
     fun testWhenURLisEncoded() {
-        var res: String? = "12"
+        var res: String? = null
         URLResolver(true).resolve(
             "https%3A%2F%2Fmi.gap.com%2Fp%2Fcp%2Fd46c31d50872e4b3%2Fc%3Fmi_u%3D51635872%26EV" +
                     "%3DGPUSCPATHTSTPC4048593PERST1_WMNNLPSPRP04162021%26DI%3D51635872%26CD%3DGPN" +
@@ -130,11 +137,12 @@ class UrlResolverTest {
                     "url%3Dhttps%253A%252F%252Fmi.gap.com%252Fp%252Frp%252F6d2aa0caedfe8322%252Fu" +
                     "rl%26mi_u%3D%25%25email_key%25%25%26EV%3D%25%25EV_value%25%25%26DI%3D%25%25D" +
                     "I_value%25%25%26CD%3D%25%25CD_value%25%25",
-            5
+            8
         ) {
             res = it
+            lock.countDown()
         }
-        lock.await(5, TimeUnit.SECONDS)
+        assertTrue(lock.await(5, TimeUnit.SECONDS))
         assertEquals(
             res,
             "https%3A%2F%2Fmi.gap.com%2Fp%2Fcp%2Fd46c31d50872e4b3%2Fc%3Fmi_u%3D51635872%26" +
