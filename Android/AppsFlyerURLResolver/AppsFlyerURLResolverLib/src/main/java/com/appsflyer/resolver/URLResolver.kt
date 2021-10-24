@@ -1,45 +1,51 @@
 package com.appsflyer.resolver
 
+
+import android.util.Log
 import java.net.CookieHandler
 import java.net.CookieManager
 import java.net.HttpURLConnection
 import java.net.URL
 import java.util.concurrent.TimeUnit
-import java.util.logging.Level
-import java.util.logging.Logger
 
 class URLResolver(private val debug: Boolean = false) {
-    private val logger = Logger.getLogger("AppsFlyer_Resolver")
+    private companion object {
+        const val TAG = "AppsFlyer_Resolver"
+    }
 
     init {
         CookieHandler.setDefault(CookieManager())
     }
 
-    fun resolveSync(url: String?, maxRedirections: Int = 10): String? {
-        if (url == null) {
-            return null
-        }
-        afDebugLog("resolving $url")
-        return if (url.isValidURL()) {
-            val redirects = ArrayList<String>().apply {
-                add(url)
+    fun resolve(url: String?, maxRedirections: Int = 10, urlResolverListener: URLResolverListener) {
+        Thread {
+            if (url == null) {
+                urlResolverListener.onComplete(null)
+                return@Thread
             }
-            var res: AFHttpResponse? = null
-            for (i in 0 until maxRedirections) {
-                // resolve current URL - check for redirection
-                res = resolveInternal(redirects.last())
-                res.redirected?.let { // if redirected to another URL
-                    redirects.add(it)
-                } ?: break
+            afDebugLog("resolving $url")
+            if (url.isValidURL()) {
+                val redirects = ArrayList<String>().apply {
+                    add(url)
+                }
+                var res: AFHttpResponse? = null
+                for (i in 0 until maxRedirections) {
+                    // resolve current URL - check for redirection
+                    res = resolveInternal(redirects.last())
+                    res.redirected?.let { // if redirected to another URL
+                        redirects.add(it)
+                    } ?: break
+                }
+                if (res?.error == null) {
+                    afDebugLog("found link: ${redirects.last()}")
+                    urlResolverListener.onComplete(redirects.last())
+                } else {
+                    urlResolverListener.onComplete(null)
+                }
+            } else {
+                urlResolverListener.onComplete(url)
             }
-
-            if (res?.error == null) {
-                afDebugLog("found link: ${redirects.last()}")
-                redirects.last()
-            } else null
-        } else {
-            url
-        }
+        }.start()
     }
 
     private fun resolveInternal(uri: String): AFHttpResponse {
@@ -66,11 +72,15 @@ class URLResolver(private val debug: Boolean = false) {
     }
 
     private fun afDebugLog(msg: String) {
-        if (debug) logger.log(Level.FINE, msg)
+        if (debug) {
+            Log.d(TAG, msg)
+        }
     }
 
     private fun afErrorLog(msg: String?, e: Throwable) {
-        if (msg != null) logger.log(Level.FINE, msg)
+        if (msg != null) {
+            Log.e(TAG, msg)
+        }
         e.printStackTrace()
     }
 

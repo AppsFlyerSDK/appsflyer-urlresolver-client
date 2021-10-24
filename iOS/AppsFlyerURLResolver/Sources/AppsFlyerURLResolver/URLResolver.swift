@@ -17,7 +17,7 @@ protocol AppsFlyerLogger {
 public class URLResolver: NSObject {
   private var redirects : [String] = []
   private var maxRedirections : Int = 10
-  private var isDebug : Bool = false
+  private var isDebug : Bool
   
   init(isDebug: Bool = false) {
     self.isDebug = isDebug
@@ -39,9 +39,7 @@ public class URLResolver: NSObject {
       completionHandler(url)
       return
     }
-    
-    print("RETURN AFTER INVALID URL")
-    
+        
     logDebug("Resolving URL: \(url)")
     self.redirects = [encoded]
     self.maxRedirections = maxRedirections
