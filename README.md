@@ -127,11 +127,12 @@ This function will perform redirects until to final URL or up to the maximum red
 |Int|maxRedirections|The maximum redirections to relove. The default value is 10 Redirections|
 |@escaping (String?) ->  Void|completionHandler|Completion handler that will return the result as a optional string| 
 
-**Returns**
-Void
 
 **Example**
 ```swift
+  // add this import
+ import AppsFlyerURLResolver
+    
  func didResolveDeepLink(_ result: DeepLinkResult) {
         if result.status == .found{
             URLResolver().resolve(url: result.deepLink?.deeplinkValue, maxRedirections: 9){ res in
