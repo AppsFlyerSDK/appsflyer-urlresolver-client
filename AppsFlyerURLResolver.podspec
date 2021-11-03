@@ -9,7 +9,7 @@
 Pod::Spec.new do |spec|
 
   spec.name         = "AppsFlyerURLResolver"
-  spec.version      = "1.0.0"
+  spec.version      = "1.0.1"
   spec.summary      = "AppsFLyer URL Resolver"
   spec.description  = <<-DESC
 The AppsFlyer URLResolver library is a simple tool to perform redirections of a URL and get a final URL from it.

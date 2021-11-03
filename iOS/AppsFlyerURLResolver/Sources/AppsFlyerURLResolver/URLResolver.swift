@@ -19,7 +19,7 @@ public class URLResolver: NSObject {
   private var maxRedirections : Int = 10
   private var isDebug : Bool
   
-  init(isDebug: Bool = false) {
+  public init(isDebug: Bool = false) {
     self.isDebug = isDebug
   }
  
