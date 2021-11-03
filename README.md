@@ -1,3 +1,4 @@
+
 <img src="https://raw.githubusercontent.com/AppsFlyerSDK/appsflyer-capacitor-plugin/main/assets/AFLogo_primary.png"  width="600" >
 
 # AppsFlyer URL Resolver
@@ -28,10 +29,10 @@ In the Project `build.gradle` file, declare the `mavenCentral` repository:
    }  
 ```
 **Step 2: Add dependency**
-In the application  `build.gradle`  file, add the dependency to [latest version of library](http://LINK):
+In the application  `build.gradle`  file, add the dependency to [latest version of library](https://mvnrepository.com/artifact/com.appsflyer/appsflyer-url-resolver):
 ```groovy  
    dependencies {  
-         implementation 'com.github.pazlavi:AppsFlyerResolver:0.0.1-V6'
+      implementation 'com.appsflyer:appsflyer-url-resolver:1.0.0'
    }  
 ```
  ### <a id="iOSInstallation"> iOS  
@@ -117,7 +118,7 @@ resolve(url: String?, maxRedirections: Int  =  10 , completionHandler: @escaping
 **Description**
 Resolve a given URL. 
 This function will perform redirects until to final URL or up to the maximum redirects. The function will return the last URL address using the completion handler.
-* `nil` URL will return `nill`. 
+* `nil` URL will return `nil`. 
 * Not a vailid URL will return the input to the function (`url` parameter).
 
 **Input arguments**
@@ -127,11 +128,12 @@ This function will perform redirects until to final URL or up to the maximum red
 |Int|maxRedirections|The maximum redirections to relove. The default value is 10 Redirections|
 |@escaping (String?) ->  Void|completionHandler|Completion handler that will return the result as a optional string| 
 
-**Returns**
-Void
 
 **Example**
 ```swift
+  // add this import
+ import AppsFlyerURLResolver
+    
  func didResolveDeepLink(_ result: DeepLinkResult) {
         if result.status == .found{
             URLResolver().resolve(url: result.deepLink?.deeplinkValue, maxRedirections: 9){ res in

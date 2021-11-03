@@ -9,10 +9,11 @@
 Pod::Spec.new do |spec|
 
   spec.name         = "AppsFlyerURLResolver"
-  spec.version      = "0.0.1"
+  spec.version      = "1.0.1"
   spec.summary      = "AppsFLyer URL Resolver"
   spec.description  = <<-DESC
-  AppsFlyer is the market leader in mobile advertising attribution & analytics, helping marketers to pinpoint their targeting, optimize their ad spend and boost their ROI.
+The AppsFlyer URLResolver library is a simple tool to perform redirections of a URL and get a final URL from it.
+
                    DESC
 
   spec.homepage     = "https://github.com/AppsFlyerSDK/AppsFlyerURLResolver"
