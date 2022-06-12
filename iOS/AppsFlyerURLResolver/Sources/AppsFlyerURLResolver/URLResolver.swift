@@ -13,13 +13,10 @@ protocol AppsFlyerLogger {
   func logError(_ msg:String)
 }
 
-typealias URLResolverCompletionHandler = (String?) -> Void
-
 public class URLResolver: NSObject {
   private var redirects : [String] = []
   private var maxRedirections : Int = 10
   private var isDebug : Bool
-  private var completionHandler : URLResolverCompletionHandler?
   
   public init(isDebug: Bool = false) {
     self.isDebug = isDebug
@@ -38,7 +35,6 @@ public class URLResolver: NSObject {
     logDebug("Resolving URL: \(url)")
     self.redirects = [encoded]
     self.maxRedirections = maxRedirections
-    self.completionHandler = completionHandler
     resolveInternal(completionHandler: completionHandler)
   }
     
@@ -79,9 +75,11 @@ public class URLResolver: NSObject {
       if let response = response {
           if let data = data {
               if let jsCode = String(data: data, encoding: .utf8) {
-                  let innerUrl = self.extractLinkFrom(JSCode: jsCode)
-                  self.resolve(url: innerUrl, maxRedirections: 2, completionHandler: completionHandler)
-                  return
+                  let redirectionLink = self.extractLinkFrom(JSCode: jsCode)
+                  if let redirectionLink = redirectionLink {
+                      completionHandler(redirectionLink)
+                      return
+                  }
               }
           }
         if let url = response.url {
@@ -141,9 +139,7 @@ extension URLResolver: URLSessionTaskDelegate {
       self.logDebug("Redirect to \(urlString)")
       
       if self.redirects.count == self.maxRedirections {
-        self.completionHandler!(urlString)    // in this case we will break the current behavior
-        session.finishTasksAndInvalidate()    // because it should return nil to the developer
-//      completionHandler(nil)
+        completionHandler(nil)
         return
       }
       // Regular iOS URL SESSION behavior - countinue resolving
