@@ -8,13 +8,17 @@
 import Foundation
 
 class JSRedirectionHandler : NSObject {
-    static var sharedInstance = JSRedirectionHandler()
-    var jsRedirectionCompletionHandler : ((String?) -> Void)?
-    var afLogger : AFLogger?
+    var jsRedirectionCompletionHandler : ((String?) -> Void)
+    var logger : AppsFlyerLogger
+    
+    init(logger: AppsFlyerLogger, redirectionCompletionHandler: @escaping (String?) -> Void) {
+        self.logger = logger
+        self.jsRedirectionCompletionHandler = redirectionCompletionHandler
+    }
     
     func resolveJSRedirection(withUrl url:String) {
         guard let url = URL(string: url) else {
-            self.jsRedirectionCompletionHandler?(nil)
+            self.jsRedirectionCompletionHandler(nil)
             return
         }
         let request = URLRequest(url: url)
@@ -22,8 +26,8 @@ class JSRedirectionHandler : NSObject {
         
         session.dataTask(with: request) {(data, response, error) in
             if let err = error {
-                self.afLogger?.logError(err.localizedDescription)
-                self.jsRedirectionCompletionHandler?(nil)
+                self.logger.logError(err.localizedDescription)
+                self.jsRedirectionCompletionHandler(nil)
                 return
             }
             
@@ -31,11 +35,11 @@ class JSRedirectionHandler : NSObject {
                 if let jsCode = String(data: data, encoding: .utf8) {
                     let redirectionLink = self.extractLinkFrom(JSCode: jsCode)
                     if let redirectionLink = redirectionLink {
-                        self.afLogger?.logDebug("Found URL: \(redirectionLink)")
-                        self.jsRedirectionCompletionHandler?(redirectionLink)
+                        self.logger.logDebug("Found URL: \(redirectionLink)")
+                        self.jsRedirectionCompletionHandler(redirectionLink)
                     }else {
-                        self.afLogger?.logError("No url found")
-                        self.jsRedirectionCompletionHandler?(nil)
+                        self.logger.logError("No url found")
+                        self.jsRedirectionCompletionHandler(nil)
                     }
                 }
             }
@@ -45,7 +49,7 @@ class JSRedirectionHandler : NSObject {
     /**
      gets the link that the JS code returns for iOS platform
      */
-    private func extractLinkFrom(JSCode stringifyJSCode: String) -> String? {
+    func extractLinkFrom(JSCode stringifyJSCode: String) -> String? {
         let rawStringLinks = matches(for: "window.location.replace\\(\\\".*\"\\)", in: stringifyJSCode)
         if rawStringLinks.isEmpty {
             return nil
@@ -60,7 +64,7 @@ class JSRedirectionHandler : NSObject {
     /**
      finds occurences of sub-string inside string using regex. Returns array of sub-strings that match the regex or an empty array when something wrong happened
      */
-    private func matches(for regex: String, in text: String) -> [String]{
+    func matches(for regex: String, in text: String) -> [String]{
         do {
             let regex = try NSRegularExpression(pattern: regex)
             let results = regex.matches(in: text, range: NSRange(text.startIndex..., in: text))
@@ -68,7 +72,7 @@ class JSRedirectionHandler : NSObject {
                 String(text[Range($0.range, in: text)!])
             }
         } catch let error {
-            print("invalid regex: \(error.localizedDescription)")
+            self.logger.logError("invalid regex: \(error.localizedDescription)")
             return []
         }
     }

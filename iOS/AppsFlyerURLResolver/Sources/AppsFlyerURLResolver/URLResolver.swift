@@ -7,16 +7,39 @@
 
 import Foundation
 
+protocol AppsFlyerLogger {
+  func logDebug(_ msg:String)
+  func logError(_ msg:String)
+}
+
+struct afLogger: AppsFlyerLogger {
+    var isDebug : Bool
+    
+    init(isDebug : Bool = false) {
+        self.isDebug = isDebug
+    }
+    
+    func logDebug(_ msg:String) {
+        if isDebug{
+            NSLog("AppsFlyer URL Resolver [Debug]: \(msg)")
+        }
+    }
+    
+    func logError(_ msg:String) {
+        NSLog("AppsFlyer URL Resolver [Error]: \(msg)")
+    }
+    
+}
 
 public class URLResolver: NSObject {
   private var redirects : [String] = []
   private var maxRedirections : Int = 10
   private var isDebug : Bool
-  private var logger: AFLogger
+  private var logger: AppsFlyerLogger
   
   public init(isDebug: Bool = false) {
     self.isDebug = isDebug
-    self.logger = AFLogger(isDebug: isDebug)
+    self.logger = afLogger(isDebug: isDebug)
   }
  
   public func resolve(url: String?, maxRedirections: Int = 10 , completionHandler :  @escaping (String?) -> Void) {
@@ -26,7 +49,7 @@ public class URLResolver: NSObject {
     }
    
     guard let encoded = encodeAndValidateUrl(url: url) else {
-        completionHandler(nil)
+        completionHandler(url)
         return
     }
         
@@ -47,9 +70,8 @@ public class URLResolver: NSObject {
           return
       }
       self.logger.logDebug("Resolving URL: \(encoded)")
-      JSRedirectionHandler.sharedInstance.afLogger = self.logger
-      JSRedirectionHandler.sharedInstance.jsRedirectionCompletionHandler = completionHandler
-      JSRedirectionHandler.sharedInstance.resolveJSRedirection(withUrl: encoded)
+      let jsResolver = JSRedirectionHandler(logger: self.logger, redirectionCompletionHandler: completionHandler)
+      jsResolver.resolveJSRedirection(withUrl: encoded)
   }
   
   private func encodeAndValidateUrl(url: String) -> String?{
