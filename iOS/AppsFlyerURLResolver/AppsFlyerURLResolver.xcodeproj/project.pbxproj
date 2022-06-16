@@ -21,6 +21,8 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+		ED1BAC492858ABED000E43EA /* JSRedirectionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED1BAC472858ABED000E43EA /* JSRedirectionHandler.swift */; };
+		ED1BAC4D2858ADB0000E43EA /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED1BAC4C2858ADB0000E43EA /* Helpers.swift */; };
 		OBJ_26 /* Extentions.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_10 /* Extentions.swift */; };
 		OBJ_27 /* URLResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_11 /* URLResolver.swift */; };
 		OBJ_45 /* AppsFlyerURLResolverTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_14 /* AppsFlyerURLResolverTests.swift */; };
@@ -46,6 +48,8 @@
 /* Begin PBXFileReference section */
 		C66DE3872700ACFA00DE3AEC /* AppsFlyerURLResolverTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AppsFlyerURLResolverTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		C66DE3892700B20E00DE3AEC /* AppsFlyerURLResolver.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = AppsFlyerURLResolver.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		ED1BAC472858ABED000E43EA /* JSRedirectionHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSRedirectionHandler.swift; sourceTree = "<group>"; };
+		ED1BAC4C2858ADB0000E43EA /* Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Helpers.swift; sourceTree = "<group>"; };
 		OBJ_10 /* Extentions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extentions.swift; sourceTree = "<group>"; };
 		OBJ_11 /* URLResolver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLResolver.swift; sourceTree = "<group>"; };
 		OBJ_14 /* AppsFlyerURLResolverTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppsFlyerURLResolverTests.swift; sourceTree = "<group>"; };
@@ -82,6 +86,7 @@
 			isa = PBXGroup;
 			children = (
 				OBJ_14 /* AppsFlyerURLResolverTests.swift */,
+				ED1BAC4C2858ADB0000E43EA /* Helpers.swift */,
 			);
 			name = AppsFlyerURLResolverTests;
 			path = Tests/AppsFlyerURLResolverTests;
@@ -108,6 +113,7 @@
 		OBJ_8 /* AppsFlyerURLResolver */ = {
 			isa = PBXGroup;
 			children = (
+				ED1BAC472858ABED000E43EA /* JSRedirectionHandler.swift */,
 				OBJ_9 /* AppsFlyerURLResolver.h */,
 				OBJ_10 /* Extentions.swift */,
 				OBJ_11 /* URLResolver.swift */,
@@ -215,6 +221,8 @@
 			buildActionMask = 0;
 			files = (
 				OBJ_26 /* Extentions.swift in Sources */,
+				ED1BAC492858ABED000E43EA /* JSRedirectionHandler.swift in Sources */,
+				ED1BAC4D2858ADB0000E43EA /* Helpers.swift in Sources */,
 				OBJ_27 /* URLResolver.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
