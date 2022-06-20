@@ -149,7 +149,7 @@ This function will perform redirects until to final URL or up to the maximum red
 resolveJSRedirection(url: String?, completionHandler :  @escaping (String?) -> Void)
 ```
 **Description**<br>
-Some esp's return a JS code which redirect to the real link according to the platform. This api extract the link from the JS code and returns it to the `completion handler` for forther redirections.
+Some esp's return a JS code which redirects to the real link according to the platform. This api extract the link from the JS code and returns it to the `completion handler` for forther redirections.
 * `nil` URL will return `nil`. 
 * Not a vailid URL will return the input to the function (`url` parameter).
 
