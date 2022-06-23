@@ -149,7 +149,7 @@ This function will perform redirects until to final URL or up to the maximum red
 resolveJSRedirection(url: String?, completionHandler :  @escaping (String?) -> Void)
 ```
 **Description**<br>
-Some esp's return a JS code which redirects to the real link according to the platform. This api extract the link from the JS code and returns it to the `completion handler` for forther redirections.
+Use this api if you want to perform redirection based on JS. This api extracts the link from the JS code and returns it to the `completion handler` for forther redirections.
 * `nil` URL will return `nil`. 
 * Not a vailid URL will return the input to the function (`url` parameter).
 
@@ -165,7 +165,7 @@ Some esp's return a JS code which redirects to the real link according to the pl
   // add this import
  import AppsFlyerURLResolver
     
-URLResolver().resolveJSRedirection(url: "my-esp-url"){ res in
+URLResolver().resolveJSRedirection(url: "my-url"){ res in
     print("The URL is: \(res ?? "nil")")
 }
 ```
