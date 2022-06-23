@@ -143,6 +143,32 @@ This function will perform redirects until to final URL or up to the maximum red
     }
 ```
 
+### `resolveJSRedirection`
+**Method signature**
+```swift
+resolveJSRedirection(url: String?, completionHandler :  @escaping (String?) -> Void)
+```
+**Description**<br>
+Use this api if you want to perform redirection based on JS. This api extracts the link from the JS code and returns it to the `completion handler` for forther redirections.
+* `nil` URL will return `nil`. 
+* Not a vailid URL will return the input to the function (`url` parameter).
+
+**Input arguments**
+|Type|Name|Description|
+|--|--|--|
+|String?|url|The URL to resolve|
+|@escaping (String?) ->  Void|completionHandler|Completion handler that will return the result as a optional string| 
+
+
+**Example**
+```swift
+  // add this import
+ import AppsFlyerURLResolver
+    
+URLResolver().resolveJSRedirection(url: "my-url"){ res in
+    print("The URL is: \(res ?? "nil")")
+}
+```
 ## <a id="Debug"> Debug  
 The logs are disabled by default. 
 You can enable the debugging logs by adding `true`  as the argument for the URLResolver() constructor.
