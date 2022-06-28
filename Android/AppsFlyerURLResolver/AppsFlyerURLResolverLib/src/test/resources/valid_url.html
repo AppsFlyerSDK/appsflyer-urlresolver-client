@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta name="referrer" content="never">
+    <script>
+        function toS() {
+            var num = 0;
+            var reg = /./;
+            reg.toString = function() {
+                num++;
+                return 'toS';
+            }
+            console.debug(reg);
+            if (num > 1) {
+                return 'b';
+            }
+            return 'p';
+        }
+
+        function driver() {
+            if (navigator.webdriver) {
+                return 'b';
+            }
+            return 'p';
+        }
+
+        function lang() {
+            return navigator.languages;
+        }
+
+        function plugins() {
+            return navigator.plugins.length;
+        }
+
+        function perm2() {
+            var permissions = window.navigator.permissions;
+            if (permissions.query.toString() !== 'function query() { [native code] }') {
+                return 'b'
+            }
+            if (permissions.query.toString.toString() !== 'function toString() { [native code] }') {
+                return 'b';
+            }
+            if (permissions.query.toString.hasOwnProperty('[[Handler]]')
+                && permissions.query.toString.hasOwnProperty('[[Target]]')
+                && permissions.query.toString.hasOwnProperty('[[IsRevoked]]')) {
+                return 'b';
+            }
+            if (permissions.hasOwnProperty('query')) {
+                return 'b';
+            }
+            return 'p';
+        }
+
+        function chrome() {
+            if (!window.chrome) {
+                return 'b';
+            }
+            return 'p';
+        }
+
+        if (/Edge/.test(window.navigator.userAgent)) {
+            window.location.replace("https://af.onelink.me/1234/dcab");
+        } else if (/Android/.test(window.navigator.userAgent)) {
+            document.location = "https://go.onelink.me/1235/abcd";
+        } else if (/Chrome/.test(window.navigator.userAgent)) {
+            var link = "https://af.onelink.me/12" + chrome() + "&_pr2=" + perm2() + "&_pl=" + plugins() +  "&_lg=" + lang() + "&_dr=" + driver() + "&_ts=" + toS();
+            window.location.replace(link);
+        } else {
+            window.location.replace("https://af.onelink.me/12562d");
+        }
+    </script>
+    <meta charset="UTF-8">
+</head>
+
+<body>
+<div class="is--module has--vertical-spacing" style="text-align: center;">
+    <div class="uiLoading uiLoading-grow" title="Loading…">
+        <div class="uiLoadingDot dot-1"></div>
+        <div class="uiLoadingDot dot-2"></div>
+        <div class="uiLoadingDot dot-3"></div>
+    </div>
+    <br>
+    <h4>You're being redirected</h4>
+    <p>If you're not redirected in a few seconds,
+        <a href="https://af.onelink.me/aadd/15562"
+           rel="noreferrer" class="private-link uiLinkWithoutUnderline uiLinkDark" role="button" tabindex="0">click
+            here</a>
+    </p>
+</div>
+</body>
+
+</html>

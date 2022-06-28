@@ -1,0 +1,65 @@
+name: Build and test Android source code
+
+on: 
+  workflow_call:
+  push:
+  pull_request:
+    branches:
+      - main
+      - development
+
+jobs:
+  Build-Android:
+    runs-on: ubuntu-latest
+    steps:
+      ## Checkout our repository ###
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Set up our JDK environment
+        uses: actions/setup-java@v3.4.0
+        with:
+          distribution: 'temurin'
+          java-version: 11
+      
+      - name: Build SDK
+        run: |
+          cd Android/AppsFlyerURLResolver
+          echo "current dir: $(pwd)"
+          export GRADLE_USER_HOME=$(pwd)/.gradle
+          chmod +x gradlew
+          echo "Build Android URL Resolver SDK"
+          ./gradlew clean assembleRelease
+  
+  Test-Android:
+    needs: [Build-Android]
+    runs-on: ubuntu-latest
+    steps:
+      ## Checkout our repository ###
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Set up our JDK environment
+        uses: actions/setup-java@v3.4.0
+        with:
+          distribution: 'temurin'
+          java-version: 11
+      
+      - name: Run Tests
+      # gradle always uses debug build type, so no point to run release here   
+        run: |
+          cd Android/AppsFlyerURLResolver
+          echo "current dir: $(pwd)"
+          export GRADLE_USER_HOME=$(pwd)/.gradle
+          chmod +x gradlew
+          echo "Test Android URL Resolver SDK"
+          ./gradlew  --no-daemon clean testDebug
+        
+      - name: Test Report
+        uses: dorny/test-reporter@v1
+        if: always()
+        with:
+          name: Test Results        
+          path: Android/AppsFlyerURLResolver/AppsFlyerURLResolverLib/build/test-results/testDebugUnitTest/TEST-*.xml    # Path to test results
+          reporter: java-junit        # Format of test results
+          fail-on-error: true

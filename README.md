@@ -80,7 +80,7 @@ github "AppsFlyerSDK/AppsFlyerURLResolver" ~> 1.0.0
 ### `resolve`
 **Method signature**
 ```kotlin
-fun resolve(url: String?,maxRedirections: Int = 10, urlResolverListener: URLResolverListener): String?
+fun resolve(url: String?,maxRedirections: Int = 10, urlResolverListener: URLResolverListener)
 ```
 **Description**
 Resolve a given URL. 
@@ -107,6 +107,29 @@ This function will perform redirects until it gets to the final URL or up to the
         })
         }
     }
+```
+### `resolveJSRedirection`
+**Method signature**
+```kotlin
+fun fun resolveJSRedirection(url: String?, urlResolverListener: URLResolverListener) 
+```
+**Description**<br>
+Use this API if you want to perform redirection based on JS (Hubspot). This api extracts the link from the JS code and returns it to the `urlResolverListener` callback for forther redirections.
+* `null` URL will return `null`. 
+* An invalid URL will return the original input (passed in the `url` parameter).
+
+**Input arguments**
+|Type|Name|Description|
+|--|--|--|
+|String?|url|The URL to resolve|
+|URLResolverListener|urlResolverListener|The listener for the output of the URL resolving
+
+
+**Example**
+```kotlin
+URLResolver(true).resolveJSRedirection("my-url"){
+    Log.d(TAG, "The URL is: $it")
+}
 ```
 
 ### <a id="iOSAPI">iOS
