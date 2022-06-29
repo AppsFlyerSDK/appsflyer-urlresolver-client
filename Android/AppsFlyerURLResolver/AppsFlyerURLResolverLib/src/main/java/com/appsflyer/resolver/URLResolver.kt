@@ -1,13 +1,26 @@
 package com.appsflyer.resolver
 
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
+import androidx.annotation.VisibleForTesting
 import java.net.CookieHandler
 import java.net.CookieManager
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 
-class URLResolver(private val debug: Boolean = false) {
+class URLResolver {
+    private val debug: Boolean
+    private val handler: Handler
     private val executors by lazy { Executors.newCachedThreadPool() }
+
+    @VisibleForTesting
+    constructor(debug: Boolean = false, handler: Handler) {
+        this.debug = debug
+        this.handler = handler
+    }
+
+    constructor(debug: Boolean = false) : this(debug, Handler(Looper.getMainLooper()))
 
     init {
         CookieHandler.setDefault(CookieManager())
@@ -68,16 +81,16 @@ class URLResolver(private val debug: Boolean = false) {
                 if (it.isValidURL) {
                     job(it)?.apply {
                         error?.let {
-                            urlResolverListener.executeOnCompleteOnMainThread(null)
+                            urlResolverListener.executeOnCompleteOnMainThread(null, handler)
                         } ?: redirected.run {
                             afDebugLog("found link: $this")
-                            urlResolverListener.executeOnCompleteOnMainThread(this)
+                            urlResolverListener.executeOnCompleteOnMainThread(this, handler)
                         }
-                    } ?: urlResolverListener.executeOnCompleteOnMainThread(null)
+                    } ?: urlResolverListener.executeOnCompleteOnMainThread(null, handler)
                 } else {
-                    urlResolverListener.executeOnCompleteOnMainThread(it)
+                    urlResolverListener.executeOnCompleteOnMainThread(it, handler)
                 }
-            } ?: urlResolverListener.executeOnCompleteOnMainThread(null)
+            } ?: urlResolverListener.executeOnCompleteOnMainThread(null, handler)
         }
     }
 

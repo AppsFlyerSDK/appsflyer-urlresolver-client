@@ -12,7 +12,7 @@ class URLResolverJSLinkTest : BaseTest() {
     @Test
     fun happyFlow() {
         prepareSuccessfulResponse(body = "valid_url.html".fileContent)
-        URLResolver(true).resolveJSRedirection(
+        URLResolver(true, mockHandler).resolveJSRedirection(
             firstURL
         ) {
             res = it
@@ -25,7 +25,7 @@ class URLResolverJSLinkTest : BaseTest() {
     @Test
     fun testWhenBodyNotContainsLinkWithProperRegex() {
         prepareSuccessfulResponse(body = "regex_not_exist.html".fileContent)
-        URLResolver(true).resolveJSRedirection(
+        URLResolver(true, mockHandler).resolveJSRedirection(
             firstURL
         ) {
             res = it
@@ -41,7 +41,7 @@ class URLResolverJSLinkTest : BaseTest() {
             body = "valid_url.html".fileContent,
             contentType = "application/json"
         )
-        URLResolver(true).resolveJSRedirection(
+        URLResolver(true, mockHandler).resolveJSRedirection(
             firstURL
         ) {
             res = it
@@ -54,7 +54,7 @@ class URLResolverJSLinkTest : BaseTest() {
     @Test
     fun testWhenLinkReturn404() {
         prepareNotFoundResponse()
-        URLResolver(true).resolveJSRedirection(
+        URLResolver(true, mockHandler).resolveJSRedirection(
             firstURL
         ) {
             res = it
@@ -67,7 +67,7 @@ class URLResolverJSLinkTest : BaseTest() {
 
     @Test
     fun testNullURL() {
-        URLResolver(true).resolveJSRedirection(null) {
+        URLResolver(true, mockHandler).resolveJSRedirection(null) {
             res = it
             lock.countDown()
         }
@@ -78,7 +78,7 @@ class URLResolverJSLinkTest : BaseTest() {
 
     @Test
     fun testNotaURL() {
-        URLResolver(true).resolveJSRedirection("abcd") {
+        URLResolver(true, mockHandler).resolveJSRedirection("abcd") {
             res = it
             lock.countDown()
         }
@@ -88,7 +88,7 @@ class URLResolverJSLinkTest : BaseTest() {
 
     @Test
     fun testEmptyString() {
-        URLResolver(true).resolveJSRedirection("") {
+        URLResolver(true, mockHandler).resolveJSRedirection("") {
             res = it
             lock.countDown()
         }
@@ -98,7 +98,7 @@ class URLResolverJSLinkTest : BaseTest() {
 
     @Test
     fun testWhenURLisEncoded() {
-        URLResolver(true).resolveJSRedirection(
+        URLResolver(true, mockHandler).resolveJSRedirection(
             URLEncoder.encode(firstURL, "UTF-8")
         ) {
             res = it

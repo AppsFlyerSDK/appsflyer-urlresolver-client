@@ -10,11 +10,11 @@ class UrlResolverTest : BaseTest() {
     @Test
     fun testHappyFlow() {
         prepareRedirections(8)
-        URLResolver(true).resolve(firstURL) {
+        URLResolver(true, mockHandler).resolve(firstURL) {
             res = it
             lock.countDown()
         }
-        assertTrue(lock.await(5, TimeUnit.SECONDS))
+        assertTrue(lock.await(120, TimeUnit.SECONDS))
         assertEquals(8.toDummyUrl(), res)
     }
 
@@ -22,7 +22,7 @@ class UrlResolverTest : BaseTest() {
     @Test
     fun testReachToMaximum() {
         prepareRedirections(8)
-        URLResolver(true).resolve(firstURL, 6) {
+        URLResolver(true, mockHandler).resolve(firstURL, 6) {
             res = it
             lock.countDown()
         }
@@ -33,7 +33,7 @@ class UrlResolverTest : BaseTest() {
     @Test
     fun testResolveUsingCallback() {
         prepareRedirections(5)
-        URLResolver(true).resolve(firstURL, 10, object : URLResolverListener {
+        URLResolver(true, mockHandler).resolve(firstURL, 10, object : URLResolverListener {
             override fun onComplete(url: String?) {
                 res = url
                 lock.countDown()
@@ -53,7 +53,7 @@ class UrlResolverTest : BaseTest() {
                 lock.countDown()
             }
         }
-        URLResolver(true).resolve(firstURL, 10, listener)
+        URLResolver(true, mockHandler).resolve(firstURL, 10, listener)
         assertTrue(lock.await(5, TimeUnit.SECONDS))
         assertEquals(5.toDummyUrl(), res)
 
@@ -61,7 +61,7 @@ class UrlResolverTest : BaseTest() {
 
     @Test
     fun testNullURL() {
-        URLResolver(true).resolve(null, 5) {
+        URLResolver(true, mockHandler).resolve(null, 5) {
             res = it
             lock.countDown()
         }
@@ -72,7 +72,7 @@ class UrlResolverTest : BaseTest() {
 
     @Test
     fun testNotaURL() {
-        URLResolver(true).resolve("abcd", 5) {
+        URLResolver(true, mockHandler).resolve("abcd", 5) {
             res = it
             lock.countDown()
         }
@@ -82,7 +82,7 @@ class UrlResolverTest : BaseTest() {
 
     @Test
     fun testEmptyString() {
-        URLResolver(true).resolve("", 5) {
+        URLResolver(true, mockHandler).resolve("", 5) {
             res = it
             lock.countDown()
         }
@@ -92,7 +92,7 @@ class UrlResolverTest : BaseTest() {
 
     @Test
     fun testWhenURLisEncoded() {
-        URLResolver(true).resolve(
+        URLResolver(true, mockHandler).resolve(
             URLEncoder.encode(firstURL, "UTF-8"),
             8
         ) {
@@ -108,7 +108,7 @@ class UrlResolverTest : BaseTest() {
     @Test
     fun testWhenLinkReturn200() {
         prepareSuccessfulResponse()
-        URLResolver(true).resolve(firstURL) {
+        URLResolver(true, mockHandler).resolve(firstURL) {
             res = it
             lock.countDown()
         }
@@ -119,7 +119,7 @@ class UrlResolverTest : BaseTest() {
     @Test
     fun testWhenLinkReturn404() {
         prepareNotFoundResponse()
-        URLResolver(true).resolve(firstURL) {
+        URLResolver(true, mockHandler).resolve(firstURL) {
             res = it
             lock.countDown()
         }

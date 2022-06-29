@@ -1,17 +1,36 @@
 package com.appsflyer.resolver
 
+import android.os.Handler
+import android.os.Message
+import androidx.test.ext.junit.runners.AndroidJUnit4
+import io.mockk.every
+import io.mockk.mockk
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.junit.After
 import org.junit.Before
+import org.junit.runner.RunWith
+import org.mockito.junit.MockitoJUnitRunner
+import org.mockito.kotlin.any
+import org.mockito.kotlin.doAnswer
+import org.mockito.kotlin.mock
+import org.robolectric.RobolectricTestRunner
 import java.net.URL
 import java.util.concurrent.CountDownLatch
 
+@RunWith(AndroidJUnit4::class)
 abstract class BaseTest {
     private val server = MockWebServer()
     lateinit var firstURL: String
     var res: String? = null
     val lock: CountDownLatch = CountDownLatch(1)
+    val mockHandler = mock<Handler> {
+        on {post(any()) } doAnswer {
+            (it.arguments[0] as Runnable).run()
+            true
+        }
+    }
+
 
 
     @Before
