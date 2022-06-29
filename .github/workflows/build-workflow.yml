@@ -11,6 +11,7 @@ on:
 jobs:
   Build-Android:
     runs-on: ubuntu-latest
+    if: always()
     steps:
       ## Checkout our repository ###
       - name: Checkout
