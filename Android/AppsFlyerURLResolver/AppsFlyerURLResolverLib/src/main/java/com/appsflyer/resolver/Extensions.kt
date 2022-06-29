@@ -1,5 +1,6 @@
 package com.appsflyer.resolver
 
+import android.os.Looper
 import java.net.HttpURLConnection
 import java.net.URL
 
@@ -27,3 +28,9 @@ val String.isValidURL
     get() = URL_REGEX.matches(this)
 
 fun String.openHttpURLConnection() = URL(this).openConnection() as HttpURLConnection
+
+fun URLResolverListener.executeOnCompleteOnMainThread(url: String?) {
+    android.os.Handler(Looper.getMainLooper()).post {
+        this.onComplete(url)
+    }
+}

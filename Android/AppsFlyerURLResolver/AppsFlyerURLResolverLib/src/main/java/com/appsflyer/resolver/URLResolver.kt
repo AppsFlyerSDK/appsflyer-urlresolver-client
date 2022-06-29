@@ -7,6 +7,7 @@ import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 
 class URLResolver(private val debug: Boolean = false) {
+    private val executors by lazy { Executors.newCachedThreadPool() }
 
     init {
         CookieHandler.setDefault(CookieManager())
@@ -61,22 +62,22 @@ class URLResolver(private val debug: Boolean = false) {
         urlResolverListener: URLResolverListener,
         job: ResolveJob
     ) {
-        Executors.newSingleThreadExecutor().submit {
+        executors.submit {
             url?.let {
                 afDebugLog("resolving $it")
                 if (it.isValidURL) {
                     job(it)?.apply {
                         error?.let {
-                            urlResolverListener.onComplete(null)
+                            urlResolverListener.executeOnCompleteOnMainThread(null)
                         } ?: redirected.run {
                             afDebugLog("found link: $this")
-                            urlResolverListener.onComplete(this)
+                            urlResolverListener.executeOnCompleteOnMainThread(this)
                         }
-                    } ?: urlResolverListener.onComplete(null)
+                    } ?: urlResolverListener.executeOnCompleteOnMainThread(null)
                 } else {
-                    urlResolverListener.onComplete(it)
+                    urlResolverListener.executeOnCompleteOnMainThread(it)
                 }
-            } ?: urlResolverListener.onComplete(null)
+            } ?: urlResolverListener.executeOnCompleteOnMainThread(null)
         }
     }
 
