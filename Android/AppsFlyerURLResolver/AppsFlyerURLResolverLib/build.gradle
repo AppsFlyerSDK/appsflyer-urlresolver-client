@@ -21,11 +21,41 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
+
+    testOptions.unitTests {
+        all {
+            testLogging {
+                exceptionFormat = "full"
+                events "PASSED", /*"STARTED",*/ "FAILED", "SKIPPED"
+            }
+            forkEvery 1
+            //maxParallelForks = Runtime.runtime.availableProcessors()
+        }
+        includeAndroidResources = true
+        returnDefaultValues = true
+    }
 }
 dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:1.5.21"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:1.7.0"
+    implementation "androidx.annotation:annotation:1.4.0"
     androidTestImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+    testImplementation 'junit:junit:4.13.2'
+    testImplementation 'androidx.test.ext:junit:1.1.3'
+    testImplementation 'com.squareup.okhttp3:mockwebserver:4.1.0'
+    testImplementation 'com.fasterxml.jackson.core:jackson-databind:2.11.1'
+    testImplementation 'org.apache.directory.studio:org.apache.commons.io:2.4'
+    testImplementation 'com.google.guava:guava:31.1-jre'
+    testImplementation 'androidx.test:core:1.4.0'
+    testImplementation 'org.mockito:mockito-core:4.6.1'
+    testImplementation "org.mockito.kotlin:mockito-kotlin:4.0.0"
+    testImplementation "io.mockk:mockk:1.12.4"
+    testImplementation 'org.robolectric:robolectric:4.7.3'
+
+
+
+
+
 }
+
 apply from: rootProject.file('gradle/publish.gradle')

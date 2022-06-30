@@ -1,66 +1,110 @@
 package com.appsflyer.resolver
 
-
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
+import androidx.annotation.VisibleForTesting
 import java.net.CookieHandler
 import java.net.CookieManager
-import java.net.HttpURLConnection
-import java.net.URL
+import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 
-class URLResolver(private val debug: Boolean = false) {
-    private companion object {
-        const val TAG = "AppsFlyer_Resolver"
+class URLResolver {
+    private val debug: Boolean
+    private val handler: Handler
+    private val executors by lazy { Executors.newCachedThreadPool() }
+
+    @VisibleForTesting
+    constructor(debug: Boolean = false, handler: Handler) {
+        this.debug = debug
+        this.handler = handler
     }
+
+    constructor(debug: Boolean = false) : this(debug, Handler(Looper.getMainLooper()))
 
     init {
         CookieHandler.setDefault(CookieManager())
     }
 
     fun resolve(url: String?, maxRedirections: Int = 10, urlResolverListener: URLResolverListener) {
-        Thread {
-            if (url == null) {
-                urlResolverListener.onComplete(null)
-                return@Thread
-            }
-            afDebugLog("resolving $url")
-            if (url.isValidURL()) {
-                val redirects = ArrayList<String>().apply {
-                    add(url)
-                }
+        startResolvingJob(url, urlResolverListener) {
+            it?.run {
+                var redirect = this
                 var res: AFHttpResponse? = null
                 for (i in 0 until maxRedirections) {
                     // resolve current URL - check for redirection
-                    res = resolveInternal(redirects.last())
-                    res.redirected?.let { // if redirected to another URL
-                        redirects.add(it)
-                    } ?: break
+                    res = resolveInternal(redirect) { con ->
+                        if (con.isRedirected) {
+                            // redirect
+                            con.redirectedTo.also { l ->
+                                afDebugLog("redirecting to $l")
+                            }
+                        } else {
+                            // did not redirected
+                            null
+                        }
+                    }
+                    res.redirected?.let { r ->
+                        redirect = r // if redirected to another URL - update last url
+                    } ?: break // break will not work inside `also` block on `resolveInternal`
                 }
-                if (res?.error == null) {
-                    afDebugLog("found link: ${redirects.last()}")
-                    urlResolverListener.onComplete(redirects.last())
-                } else {
-                    urlResolverListener.onComplete(null)
+                res?.apply {
+                    // return the last link we found
+                    redirected = redirect
                 }
-            } else {
-                urlResolverListener.onComplete(url)
             }
-        }.start()
+        }
     }
 
-    private fun resolveInternal(uri: String): AFHttpResponse {
+    fun resolveJSRedirection(url: String?, urlResolverListener: URLResolverListener) {
+        startResolvingJob(url, urlResolverListener) {
+            it?.run {
+                resolveInternal(this) { con ->
+                    if (con.isSuccessful && con.isHtmlPage) {
+                        con.jsRedirected
+                    } else {
+                        null
+                    }
+                }
+            }
+        }
+    }
+
+    private fun startResolvingJob(
+        url: String?,
+        urlResolverListener: URLResolverListener,
+        job: ResolveJob
+    ) {
+        executors.submit {
+            url?.let {
+                afDebugLog("resolving $it")
+                if (it.isValidURL) {
+                    job(it)?.apply {
+                        error?.let {
+                            urlResolverListener.executeOnCompleteOnMainThread(null, handler)
+                        } ?: redirected.run {
+                            afDebugLog("found link: $this")
+                            urlResolverListener.executeOnCompleteOnMainThread(this, handler)
+                        }
+                    } ?: urlResolverListener.executeOnCompleteOnMainThread(null, handler)
+                } else {
+                    urlResolverListener.executeOnCompleteOnMainThread(it, handler)
+                }
+            } ?: urlResolverListener.executeOnCompleteOnMainThread(null, handler)
+        }
+    }
+
+    private fun resolveInternal(uri: String, logic: LookForRedirect): AFHttpResponse {
         val res = AFHttpResponse()
         try {
-            (URL(uri).openConnection() as HttpURLConnection).run {
+            uri.openHttpURLConnection().run {
                 instanceFollowRedirects = false
                 readTimeout = TimeUnit.SECONDS.toMillis(2).toInt()
                 connectTimeout = TimeUnit.SECONDS.toMillis(2).toInt()
                 val responseCode = responseCode
-                res.status = responseCode
-                if (responseCode in 300..308) {
-                    // redirect
-                    res.redirected = getHeaderField("Location")
-                    afDebugLog("redirecting to ${res.redirected}")
+                res.apply {
+                    status = responseCode
+                    redirected = logic(this@run)
                 }
                 disconnect()
             }
@@ -82,11 +126,5 @@ class URLResolver(private val debug: Boolean = false) {
             Log.e(TAG, msg)
         }
         e.printStackTrace()
-    }
-
-    private fun String.isValidURL(): Boolean {
-        val regex =
-            Regex("^(http|https)://(\\w+:{0,1}\\w*@)?(\\S+)(:[0-9]+)?(/|/([\\w#!:.?+=&%@\\-/]))?")
-        return regex.matches(this)
     }
 }
