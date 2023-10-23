@@ -10,35 +10,26 @@ import java.util.concurrent.TimeUnit
 class URLResolverJSLinkTest : BaseTest() {
 
     @Test
-    fun happyFlow() {
-        prepareSuccessfulResponse(body = "valid_url.html".fileContent)
-        URLResolver(true, mockHandler).resolveJSRedirection(
-            firstURL
-        ) {
-            res = it
-            lock.countDown()
-        }
-        Assert.assertTrue(lock.await(5, TimeUnit.SECONDS))
-        Assert.assertEquals("https://go.onelink.me/1235/abcd", res)
-    }
+    fun happyFlowHubspot() =
+        happyFlowTest("https://go.onelink.me/1235/abcd", "valid_url_hubspot.html")
 
     @Test
-    fun testWhenBodyNotContainsLinkWithProperRegex() {
-        prepareSuccessfulResponse(body = "regex_not_exist.html".fileContent)
-        URLResolver(true, mockHandler).resolveJSRedirection(
-            firstURL
-        ) {
-            res = it
-            lock.countDown()
-        }
-        Assert.assertTrue(lock.await(5, TimeUnit.SECONDS))
-        Assert.assertNull(res)
-    }
+    fun happyFlowEmersys() = happyFlowTest(
+        "https://yossiesp.onelink.me/Amo7?pid=yossiemarsys&amp;c=ESPTEST&amp;af_force_deeplink=true&amp;is_retargeting=true",
+        "valid_url_emersys.html"
+    )
+
+    @Test
+    fun `test Emersys return null when missing redirection link`() =
+        regexNotFoundTest("not_valid_url_emersys.html")
+
+    @Test
+    fun testWhenBodyNotContainsLinkWithProperRegex() = regexNotFoundTest("regex_not_exist.html")
 
     @Test
     fun testWhenContentTypeIsNotHtml() {
         prepareSuccessfulResponse(
-            body = "valid_url.html".fileContent,
+            body = "valid_url_hubspot.html".fileContent,
             contentType = "application/json"
         )
         URLResolver(true, mockHandler).resolveJSRedirection(
@@ -108,6 +99,30 @@ class URLResolverJSLinkTest : BaseTest() {
         Assert.assertEquals(
             URLEncoder.encode(firstURL, "UTF-8"), res
         )
+    }
+
+    private fun happyFlowTest(expectedUrl: String, html: String) {
+        prepareSuccessfulResponse(body = html.fileContent)
+        URLResolver(true, mockHandler).resolveJSRedirection(
+            firstURL
+        ) {
+            res = it
+            lock.countDown()
+        }
+        Assert.assertTrue(lock.await(5, TimeUnit.SECONDS))
+        Assert.assertEquals(expectedUrl, res)
+    }
+
+    private fun regexNotFoundTest(html: String) {
+        prepareSuccessfulResponse(body = html.fileContent)
+        URLResolver(true, mockHandler).resolveJSRedirection(
+            firstURL
+        ) {
+            res = it
+            lock.countDown()
+        }
+        Assert.assertTrue(lock.await(5, TimeUnit.SECONDS))
+        Assert.assertNull(res)
     }
 
     private val String.fileContent: String
