@@ -22,7 +22,10 @@ internal val HttpURLConnection.redirectedTo: String?
 
 internal val HttpURLConnection.jsRedirected
     get() = this.inputStream.bufferedReader().readText().run {
-        HUBSPOT_REGEX.find(this)?.destructured?.component1()
+        // 1. check for a redirection using `<meta http-equiv="refresh"`
+        // 2. check for Hubspot redirection regex
+        REFRESH_META_REGEX.find(this)?.destructured?.component1()
+            ?: HUBSPOT_REGEX.find(this)?.destructured?.component1()
     }
 
 internal val String.isValidURL
