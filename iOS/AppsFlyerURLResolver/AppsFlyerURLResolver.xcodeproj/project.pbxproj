@@ -23,6 +23,8 @@
 /* Begin PBXBuildFile section */
 		ED1BAC492858ABED000E43EA /* JSRedirectionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED1BAC472858ABED000E43EA /* JSRedirectionHandler.swift */; };
 		ED1BAC4D2858ADB0000E43EA /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED1BAC4C2858ADB0000E43EA /* Helpers.swift */; };
+		FC5E10D02AF903560090B75B /* EmersysHTMLExampleSuccess.html in Resources */ = {isa = PBXBuildFile; fileRef = FC5E10CA2AF8EFCF0090B75B /* EmersysHTMLExampleSuccess.html */; };
+		FC5E10D42AF904FF0090B75B /* HubspotHTMLValidURL.html in Resources */ = {isa = PBXBuildFile; fileRef = FC5E10D12AF904350090B75B /* HubspotHTMLValidURL.html */; };
 		OBJ_26 /* Extentions.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_10 /* Extentions.swift */; };
 		OBJ_27 /* URLResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_11 /* URLResolver.swift */; };
 		OBJ_45 /* AppsFlyerURLResolverTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_14 /* AppsFlyerURLResolverTests.swift */; };
@@ -50,6 +52,8 @@
 		C66DE3892700B20E00DE3AEC /* AppsFlyerURLResolver.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = AppsFlyerURLResolver.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		ED1BAC472858ABED000E43EA /* JSRedirectionHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSRedirectionHandler.swift; sourceTree = "<group>"; };
 		ED1BAC4C2858ADB0000E43EA /* Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Helpers.swift; sourceTree = "<group>"; };
+		FC5E10CA2AF8EFCF0090B75B /* EmersysHTMLExampleSuccess.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = EmersysHTMLExampleSuccess.html; sourceTree = "<group>"; };
+		FC5E10D12AF904350090B75B /* HubspotHTMLValidURL.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = HubspotHTMLValidURL.html; sourceTree = "<group>"; };
 		OBJ_10 /* Extentions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extentions.swift; sourceTree = "<group>"; };
 		OBJ_11 /* URLResolver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLResolver.swift; sourceTree = "<group>"; };
 		OBJ_14 /* AppsFlyerURLResolverTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppsFlyerURLResolverTests.swift; sourceTree = "<group>"; };
@@ -74,6 +78,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		FC5E10D32AF904F40090B75B /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				FC5E10CA2AF8EFCF0090B75B /* EmersysHTMLExampleSuccess.html */,
+				FC5E10D12AF904350090B75B /* HubspotHTMLValidURL.html */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
 		OBJ_12 /* Tests */ = {
 			isa = PBXGroup;
 			children = (
@@ -85,6 +98,7 @@
 		OBJ_13 /* AppsFlyerURLResolverTests */ = {
 			isa = PBXGroup;
 			children = (
+				FC5E10D32AF904F40090B75B /* Resources */,
 				OBJ_14 /* AppsFlyerURLResolverTests.swift */,
 				ED1BAC4C2858ADB0000E43EA /* Helpers.swift */,
 			);
@@ -131,6 +145,7 @@
 			buildPhases = (
 				OBJ_25 /* Sources */,
 				OBJ_28 /* Frameworks */,
+				FC5E10CE2AF903260090B75B /* Resources */,
 			);
 			buildRules = (
 			);
@@ -147,6 +162,7 @@
 			buildPhases = (
 				OBJ_44 /* Sources */,
 				OBJ_46 /* Frameworks */,
+				FC5E10CF2AF9034E0090B75B /* Resources */,
 			);
 			buildRules = (
 			);
@@ -214,6 +230,25 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		FC5E10CE2AF903260090B75B /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FC5E10CF2AF9034E0090B75B /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FC5E10D42AF904FF0090B75B /* HubspotHTMLValidURL.html in Resources */,
+				FC5E10D02AF903560090B75B /* EmersysHTMLExampleSuccess.html in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		OBJ_25 /* Sources */ = {
